@@ -1,0 +1,360 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix cc:   <https://example.org/concreteclass/> .
+@prefix ilcd: <https://example.org/ilcd/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+##################################################################
+# 1) Define your SKOS Concepts
+##################################################################
+cc:LowStrengthConcrete a skos:Concept ;
+    skos:prefLabel "Low Strength Concrete"@en ;
+    skos:note "Compressive Strength <25 MPa (e.g., ≤C16/20)"@en .
+
+cc:MediumStrengthConcrete a skos:Concept ;
+    skos:prefLabel "Medium Strength Concrete"@en ;
+    skos:note "Compressive Strength 25–40 MPa (e.g., C20/25–C30/37)"@en .
+
+cc:HighStrengthConcrete a skos:Concept ;
+    skos:prefLabel "High Strength Concrete"@en ;
+    skos:note "Compressive Strength ≥40 MPa (e.g., ≥C35/45)"@en .
+
+cc:LightWeightConcrete a skos:Concept ;
+    skos:prefLabel "Light Weight Concrete"@en ;
+    skos:note "Density 800–2000 kg/m³"@en .
+
+cc:NormalWeightConcrete a skos:Concept ;
+    skos:prefLabel "Normal Weight Concrete"@en ;
+    skos:note "Density 2000–2600 kg/m³"@en .
+
+cc:HeavyWeightConcrete a skos:Concept ;
+    skos:prefLabel "Heavy Weight Concrete"@en ;
+    skos:note "Density >2600 kg/m³"@en .
+
+
+##################################################################
+# 2) Low Strength Concrete Shape
+##################################################################
+cc:LowStrengthConcreteShape
+    a sh:NodeShape ;
+    sh:targetClass ilcd:ProcessDataSet ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [
+                sh:prefix "ilcd" ; 
+                sh:namespace "https://example.org/ilcd/"
+            ] ;
+            sh:declare [
+                sh:prefix "cc" ;
+                sh:namespace "https://example.org/concreteclass/"
+            ] 
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                $this cc:hasStrengthClassification cc:LowStrengthConcrete .
+            }
+            WHERE {
+                $this ilcd:exchanges ?exchanges .
+                ?exchanges ilcd:exchange ?exchangeEntry .
+                ?exchangeEntry ilcd:materialProperties ?mpEntry .
+                ?mpEntry ilcd:name "compressive strength" ;
+                         ilcd:value ?csValueStr .
+                BIND(xsd:float(?csValueStr) AS ?csValue)
+                FILTER(?csValue < 25)
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 3) Medium Strength Concrete Shape
+##################################################################
+cc:MediumStrengthConcreteShape
+    a sh:NodeShape ;
+    sh:targetClass ilcd:ProcessDataSet ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "ilcd" ; sh:namespace "https://example.org/ilcd/" ] ;
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                $this cc:hasStrengthClassification cc:MediumStrengthConcrete .
+            }
+            WHERE {
+                $this ilcd:exchanges ?exchanges .
+                ?exchanges ilcd:exchange ?exchangeEntry .
+                ?exchangeEntry ilcd:materialProperties ?mpEntry .
+                ?mpEntry ilcd:name "compressive strength" ;
+                         ilcd:value ?csValueStr .
+                BIND(xsd:float(?csValueStr) AS ?csValue)
+                FILTER(?csValue >= 25 && ?csValue <= 40)
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 4) High Strength Concrete Shape
+##################################################################
+cc:HighStrengthConcreteShape
+    a sh:NodeShape ;
+    sh:targetClass ilcd:ProcessDataSet ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "ilcd" ; sh:namespace "https://example.org/ilcd/" ] ;
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                $this cc:hasStrengthClassification cc:HighStrengthConcrete .
+            }
+            WHERE {
+                $this ilcd:exchanges ?exchanges .
+                ?exchanges ilcd:exchange ?exchangeEntry .
+                ?exchangeEntry ilcd:materialProperties ?mpEntry .
+                ?mpEntry ilcd:name "compressive strength" ;
+                         ilcd:value ?csValueStr .
+                BIND(xsd:float(?csValueStr) AS ?csValue)
+                FILTER(?csValue > 40)
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 5) Light Weight Concrete Shape
+##################################################################
+cc:LightWeightConcreteShape
+    a sh:NodeShape ;
+    sh:targetClass ilcd:ProcessDataSet ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "ilcd" ; sh:namespace "https://example.org/ilcd/" ] ;
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                $this cc:hasWeightClassification cc:LightWeightConcrete .
+            }
+            WHERE {
+                $this ilcd:exchanges ?exchanges .
+                ?exchanges ilcd:exchange ?exchangeEntry .
+                ?exchangeEntry ilcd:materialProperties ?mpEntry .
+                ?mpEntry ilcd:name "gross density" ;
+                         ilcd:value ?densityValueStr .
+                BIND(xsd:float(?densityValueStr) AS ?densityValue)
+                FILTER(?densityValue < 2000)
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 6) Normal Weight Concrete Shape
+##################################################################
+cc:NormalWeightConcreteShape
+    a sh:NodeShape ;
+    sh:targetClass ilcd:ProcessDataSet ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "ilcd" ; sh:namespace "https://example.org/ilcd/" ] ;
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                $this cc:hasWeightClassification cc:NormalWeightConcrete .
+            }
+            WHERE {
+                $this ilcd:exchanges ?exchanges .
+                ?exchanges ilcd:exchange ?exchangeEntry .
+                ?exchangeEntry ilcd:materialProperties ?mpEntry .
+                ?mpEntry ilcd:name "gross density" ;
+                         ilcd:value ?densityValueStr .
+                BIND(xsd:float(?densityValueStr) AS ?densityValue)
+                FILTER(?densityValue >= 2000 && ?densityValue <= 2600)
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 7) Heavy Weight Concrete Shape
+##################################################################
+cc:HeavyWeightConcreteShape
+    a sh:NodeShape ;
+    sh:targetClass ilcd:ProcessDataSet ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "ilcd" ; sh:namespace "https://example.org/ilcd/" ] ;
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;   
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                $this cc:hasWeightClassification cc:HeavyWeightConcrete .
+            }
+            WHERE {
+                $this ilcd:exchanges ?exchanges .
+                ?exchanges ilcd:exchange ?exchangeEntry .
+                ?exchangeEntry ilcd:materialProperties ?mpEntry .
+                ?mpEntry ilcd:name "gross density" ;
+                         ilcd:value ?densityValueStr .
+                BIND(xsd:float(?densityValueStr) AS ?densityValue)
+                FILTER(?densityValue > 2600)
+            }
+        """ ;
+    ] .
+
+
+##################################################################
+# 1) A shape to define cc:LowStrengthConcrete as a SKOS concept if missing
+##################################################################
+cc:LowStrengthConcreteDefinitionShape
+    a sh:NodeShape ;
+    sh:targetNode cc:LowStrengthConcrete ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+            sh:declare [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#" ]
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                cc:LowStrengthConcrete
+                    a skos:Concept ;
+                    skos:prefLabel "Low Strength Concrete"@en ;
+                    skos:note "Compressive Strength < 25 MPa (e.g., ≤C16/20)"@en .
+            }
+            WHERE {
+                FILTER NOT EXISTS { cc:LowStrengthConcrete a skos:Concept }
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 2) A shape to define cc:MediumStrengthConcrete as a SKOS concept if missing
+##################################################################
+cc:MediumStrengthConcreteDefinitionShape
+    a sh:NodeShape ;
+    sh:targetNode cc:MediumStrengthConcrete ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+            sh:declare [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#" ]
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                cc:MediumStrengthConcrete
+                    a skos:Concept ;
+                    skos:prefLabel "Medium Strength Concrete"@en ;
+                    skos:note "Compressive Strength 25–40 MPa (e.g., C20/25–C30/37)"@en .
+            }
+            WHERE {
+                FILTER NOT EXISTS { cc:MediumStrengthConcrete a skos:Concept }
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 3) A shape to define cc:HighStrengthConcrete as a SKOS concept if missing
+##################################################################
+cc:HighStrengthConcreteDefinitionShape
+    a sh:NodeShape ;
+    sh:targetNode cc:HighStrengthConcrete ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+            sh:declare [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#" ]
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                cc:HighStrengthConcrete
+                    a skos:Concept ;
+                    skos:prefLabel "High Strength Concrete"@en ;
+                    skos:note "Compressive Strength ≥ 40 MPa (e.g., ≥C35/45)"@en .
+            }
+            WHERE {
+                FILTER NOT EXISTS { cc:HighStrengthConcrete a skos:Concept }
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 4) A shape to define cc:LightWeightConcrete as a SKOS concept if missing
+##################################################################
+cc:LightWeightConcreteDefinitionShape
+    a sh:NodeShape ;
+    sh:targetNode cc:LightWeightConcrete ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+            sh:declare [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#" ]
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                cc:LightWeightConcrete
+                    a skos:Concept ;
+                    skos:prefLabel "Light Weight Concrete"@en ;
+                    skos:note "Density 800–2000 kg/m³"@en .
+            }
+            WHERE {
+                FILTER NOT EXISTS { cc:LightWeightConcrete a skos:Concept }
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 5) A shape to define cc:NormalWeightConcrete as a SKOS concept if missing
+##################################################################
+cc:NormalWeightConcreteDefinitionShape
+    a sh:NodeShape ;
+    sh:targetNode cc:NormalWeightConcrete ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+            sh:declare [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#" ]
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                cc:NormalWeightConcrete
+                    a skos:Concept ;
+                    skos:prefLabel "Normal Weight Concrete"@en ;
+                    skos:note "Density 2000–2600 kg/m³"@en .
+            }
+            WHERE {
+                FILTER NOT EXISTS { cc:NormalWeightConcrete a skos:Concept }
+            }
+        """ ;
+    ] .
+
+##################################################################
+# 6) A shape to define cc:HeavyWeightConcrete as a SKOS concept if missing
+##################################################################
+cc:HeavyWeightConcreteDefinitionShape
+    a sh:NodeShape ;
+    sh:targetNode cc:HeavyWeightConcrete ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:prefixes [
+            sh:declare [ sh:prefix "cc"   ; sh:namespace "https://example.org/concreteclass/" ] ;
+            sh:declare [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#" ]
+        ] ;
+        sh:construct """
+            CONSTRUCT {
+                cc:HeavyWeightConcrete
+                    a skos:Concept ;
+                    skos:prefLabel "Heavy Weight Concrete"@en ;
+                    skos:note "Density > 2600 kg/m³"@en .
+            }
+            WHERE {
+                FILTER NOT EXISTS { cc:HeavyWeightConcrete a skos:Concept }
+            }
+        """ ;
+    ] .
+

@@ -1,0 +1,19 @@
+# Structural example only: no prototype filtering, ranking, or query application.
+PREFIX ilcd: <https://example.org/ilcd/>
+PREFIX obd: <https://example.org/obd/>
+PREFIX din: <https://example.org/din276/>
+PREFIX cc: <https://example.org/concreteclass/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?epd ?uuid ?repository ?material ?context ?strength ?density
+WHERE {
+  ?epd a ilcd:ProcessDataSet ;
+       dcterms:source ?repository ;
+       ilcd:processInformation/ilcd:dataSetInformation ?info ;
+       din:hasDIN276CostGroup ?context .
+  ?info ilcd:UUID ?uuid ;
+        ilcd:classificationInformation/ilcd:classification/ilcd:classEntries/obd:hasCanonicalCategory ?material .
+  OPTIONAL { ?epd cc:hasStrengthClassification ?strength }
+  OPTIONAL { ?epd cc:hasWeightClassification ?density }
+}
+LIMIT 20

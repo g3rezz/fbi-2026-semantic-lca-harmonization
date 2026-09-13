@@ -1,0 +1,260 @@
+name: ILCDadministrativeInformation
+id: https://example.org/ILCDadministrativeInformation
+license: CC-BY-4.0
+imports:
+  - linkml:types
+  - linkml_shared_definitions # Import shared definitions between ILCD YAML schemas
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ILCDadmin: https://example.org/ILCDadministrativeInformation/
+default_prefix: ILCDadmin
+
+########################################
+# Classes
+########################################
+classes:
+  AdministrativeInformation:
+    description: "Container for the administrativeInformation section."
+    slots:
+      - id
+      - commissionerAndGoal
+      - dataGenerator
+      - dataEntryBy
+      - publicationAndOwnership
+
+  CommissionerAndGoal:
+    description: "Holds the reference about the goal and scope of the dataset."
+    slots:
+      - id
+      - referenceToCommissioner
+
+  DataGenerator:
+    description: "Holds the reference to the person or entity generating the dataset."
+    slots:
+      - id
+      - referenceToPersonOrEntityGeneratingTheDataSet
+
+  DataEntryBy:
+    description: "Holds timestamp and references to data set formats."
+    slots:
+      - id
+      - timeStamp
+      - referenceToDataSetFormat
+      - referenceToPersonOrEntityEnteringTheData
+
+  PublicationAndOwnership:
+    description: "Contains dataset version, ownership references, etc."
+    slots:
+      - id
+      - dataSetVersion
+      - referenceToPrecedingDataSetVersion
+      - referenceToRegistrationAuthority
+      - dateOfLastRevision
+      - registrationNumber
+      - referenceToOwnershipOfDataSet
+      - copyright
+      - licenseType
+      - accessRestrictions
+      - otherPAO
+
+########################################
+# Slots
+########################################
+slots:
+  # -- AdministrativeInformation
+  commissionerAndGoal:
+    range: CommissionerAndGoal
+    inlined: true
+    recommended: true # Recommended (r) but not required
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: "Basic information about the goal and scope of the dataset."
+
+  referenceToCommissioner:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    description: >
+      "Contact data set" of the commissioner / financing party of the data collection / compilation and of the dataset modelling.
+      For groups of commissioners, each single organisation should be named. For dataset updates and for direct use of data from 
+      formerly commissioned studies, also the original commissioner should be named.
+
+  dataGenerator:
+    range: DataGenerator
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Expert(s), that compiled and modelled the data set as well as internal 
+      administrative information linked to the data generation activity.
+
+  dataEntryBy:
+    range: DataEntryBy
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Staff or entity, that documented the generated data set, entering the 
+      information into the database; plus administrative information linked 
+      to the data entry activity.
+
+  publicationAndOwnership:
+    range: PublicationAndOwnership
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Information related to publication and version management of the data 
+      set including copyright and access restrictions.
+
+  # -- DataGenerator
+  referenceToPersonOrEntityGeneratingTheDataSet:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    description: >
+      "Contact data set" of the person(s), working group(s), organisation(s) 
+      or database network, that generated the data set, i.e. being responsible 
+      for its correctness regarding methods, inventory, and documentative 
+      information.
+
+  # -- DataEntryBy
+  timeStamp:
+    range: UnixTimestamp # xs:dateTime according to the ILCD schema as Unix timestamp in the instance data
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description:
+      > # "Numeric timestamp for data entry (milliseconds since epoch)."
+      Date and time stamp of data set generation, typically an automated 
+      entry ("last saved").
+
+  referenceToDataSetFormat:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    description: >
+      "Source data set" of the used version of the ILCD format. If additional 
+      data format fields have been integrated into the dataset file using 
+      the "namespace" option, the used format namespace(s) are to be given.
+      This applies when the dataset carries additional information specified 
+      by other LCA formats, such as those from different database networks 
+      or LCA software.
+
+  referenceToPersonOrEntityEnteringTheData:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    required: false # Optional (o) but not recommended
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      "Contact data set" of the responsible person or entity that has 
+      documented this data set, i.e. entered the data and the descriptive 
+      information.
+
+  # -- PublicationAndOwnership
+  dataSetVersion:
+    range: string
+    required: true
+    minimum_cardinality: 1
+    maximum_cardinality: 1
+    description: "Dataset version string (e.g., '07.01.004')."
+
+  referenceToPrecedingDataSetVersion:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    description: >
+      Last preceding data set, which was replaced by this version. 
+      Either a URI of that data set (i.e. an internet address) or its 
+      UUID plus version number is given (or both).
+
+  referenceToRegistrationAuthority:
+    range: GlobalReferenceType
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      "Contact data set" of the authority that has registered this data set.
+
+  dateOfLastRevision:
+    range: UnixTimestamp # xs:dateTime according to the ILCD schema as Unix timestamp in the instance data
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description:
+      > # "Numeric timestamp for data entry (milliseconds since epoch)."
+      Date when the data set was revised for the last time, 
+      typically manually set.
+
+  registrationNumber:
+    range: string
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      A unique identifying number for this data set issued by the 
+      registration authority.
+
+  referenceToOwnershipOfDataSet:
+    range: GlobalReferenceType
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      "Contact data set" of the person or entity who owns this data set. 
+      (Note: this is not necessarily the publisher of the data set.)
+
+  copyright:
+    range: boolean
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Indicates whether or not a copyright on the data set exists. 
+      Decided upon by the "Owner of data set". 
+      [Note: See also field "Access and use restrictions".]
+
+  # To Do:
+  # Model as Ennumaration: LicenseTypeValues
+  # - Free of charge for all users and uses
+  # - Free of charge for some user types or use types
+  # - Free of charge for members only
+  # - License fee
+  # - Other
+  licenseType:
+    range: string
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Type of license that applies to the access and use of this data set.
+
+  accessRestrictions:
+    range: MultiLangString
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    multivalued: true
+    inlined_as_list: true
+    description: >
+      Access restrictions / use conditions for this data set as free text or 
+      referring to e.g. license conditions. In case of no restrictions 
+      "None" is entered.
+
+  otherPAO:
+    range: OtherContent
+    inlined: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1

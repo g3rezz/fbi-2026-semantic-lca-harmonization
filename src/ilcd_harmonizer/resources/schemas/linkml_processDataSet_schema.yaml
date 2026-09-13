@@ -1,0 +1,87 @@
+name: ilcd
+id: https://example.org/ilcd
+license: CC-BY-4.0
+
+imports:
+  - linkml:types
+  - linkml_processInformation_schema
+  - linkml_modellingAndValidation_schema
+  - linkml_administrativeInformation_schema
+  - linkml_exchanges_schema
+  - linkml_lciaResults_schema
+  - linkml_shared_definitions
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ilcd: https://example.org/ilcd/
+default_prefix: ilcd
+
+# Top-level class that unifies all sub-schemas
+classes:
+  ProcessDataSet:
+    description: "Root of the unified ILCD schema"
+    slots:
+      - id
+      - processInformation
+      - modellingAndValidation
+      - administrativeInformation
+      - exchanges
+      - lciaResults
+      - version
+    slot_usage:
+      processInformation:
+        range: ProcessInformation
+      modellingAndValidation:
+        range: ModellingAndValidation
+      administrativeInformation:
+        range: AdministrativeInformation
+      exchanges:
+        range: Exchanges
+      lciaResults:
+        range: LCIAResults
+
+# Define top-level slots used by ProcessDataSet
+slots:
+  processInformation:
+    inlined: true
+    required: true
+    minimum_cardinality: 1
+    maximum_cardinality: 1
+    description: >
+      Corresponds to the ISO/TS 14048 section "Process description". 
+      It comprises the following six sub-sections: 
+        1) "Data set information" for data set identification and 
+        overarching information items, 
+        2) "Quantitative reference", 
+        3) "Time", 
+        4) "Geography", 
+        5) "Technology" and 
+        6) "Mathematical relations".
+
+  modellingAndValidation:
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Covers the five sub-sections: 
+        1) LCI method and allocation, 
+        2) Data sources, treatment and representativeness, 
+        3) Completeness, 
+        4) Validation, and 
+        5) Compliance. 
+      (Section refers to LCI modelling and data treatment aspects etc., 
+      NOT the modeling of e.g. the input/output-relationships of a 
+      parameterised data set.)
+
+  administrativeInformation:
+    description: "Administrative information details"
+    inlined: true
+
+  exchanges:
+    description: "Exchange information details"
+    inlined: true
+
+  lciaResults:
+    description: "LCIA results details"
+    inlined: true

@@ -1,0 +1,200 @@
+name: SharedDefinitions
+id: https://example.org/SharedDefinitions
+license: CC-BY-4.0
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ILCDsd: https://example.org/SharedDefinitions/
+default_prefix: ILCDsd
+
+########################################
+# Types
+########################################
+types:
+  UUIDType:
+    base: str
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    description: A standard UUID (8-4-4-4-12 hex digits).
+    uri: linkml:UUIDType
+
+  Year:
+    base: int
+    pattern: "^[0-9]{4}$"
+    description: 4-digit year.
+    uri: linkml:Year
+
+  UnixTimestamp:
+    base: int
+    description: Unix timestamp (milliseconds since epoch).
+    uri: linkml:UnixTimestamp
+
+  ResourceURL:
+    base: str
+    description: A URL string representing a resource location.
+    uri: linkml:ResourceURL
+
+########################################
+# Classes
+########################################
+
+classes:
+  GlobalReferenceType:
+    description: >
+      Represents a reference to another dataset or file. Either refObjectId 
+      and version, or refObjectUri, or both have to be specified.
+    slots:
+      - id
+      - shortDescription
+      - type
+      - refObjectId
+      - version
+      - refObjectUri
+
+  OtherContent:
+    description: A container holding 'anies' a list of anies objects
+    slots:
+      - id
+      - anies
+
+  AniesType:
+    description: >
+      A flexible extension pattern that can carry name-value pairs, optional
+      metadata, references, or embedded structures like scenarios or margins.
+    slots:
+      - id
+      - name
+      - value
+      - timestampValue
+      - objectValue
+      - module
+      - scenario
+      - margins
+      - description
+      - objectScenario
+
+  Scenario:
+    description: One scenario stored inside 'anies'.
+    slots:
+      - id
+      - description
+      - name
+      - default
+
+  MultiLangString:
+    slots:
+      - id
+      - value
+      - lang
+
+########################################
+# Slots
+########################################
+
+slots:
+  id:
+    description: Unique ID for building URIs, e.g. 'ex:admininfo/123'.
+    range: string
+    identifier: true
+    required: true
+
+  shortDescription:
+    description: Short description as multi-lang list.
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+
+  description:
+    description: Description as multi-lang list.
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+
+  type:
+    description: Type indicator.
+    range: string
+
+  refObjectId:
+    description: Reference object ID.
+    range: UUIDType
+
+  version:
+    description: Version string (e.g., '00.00.001').
+    range: string
+
+  name:
+    description: Key name in anies entries.
+    range: string
+
+  value:
+    description: Generic value field for simple strings.
+    range: string
+
+  timestampValue:
+    description: Stores numeric Unix timestamp.
+    range: UnixTimestamp
+
+  objectValue:
+    description: Dictionary-like object stored as JSON.
+    range: GlobalReferenceType
+    inlined: true
+
+  anies:
+    description: List of arbitrary name-value pairs.
+    range: AniesType
+    multivalued: true
+    inlined_as_list: true
+
+  lang:
+    description: Language code (e.g. 'en', 'de').
+    range: string
+
+  refObjectUri:
+    description: Optional URI for the data set format.
+    range: string
+
+  UUID:
+    range: UUIDType
+    required: true
+    minimum_cardinality: 1
+    maximum_cardinality: 1
+    description: Unique Universal Identifier, 16-byte hex number.
+
+  module:
+    range: string
+    description: Module name for environmental indicatores.
+
+  meanAmount:
+    range: float
+    description: Mean numeric value for the exchange and LCIA indicator.
+
+  objectScenario:
+    range: Scenario
+    multivalued: true
+    inlined_as_list: true
+    description: A list of scenario objects inside 'anies'.
+
+  default:
+    range: boolean
+    required: false
+    description: Indicates whether this is the default scenario.
+
+  margins:
+    range: float
+    required: false
+    minimum_cardinality:
+    maximum_cardinality: 1
+    description: The amount (in percent) of the included uncertainty margins
+
+  scenario:
+    range: string
+    required: false
+
+  # --- Exchanges and ilcdResults
+  uncertaintyDistributionType: # Has enum
+    range: string
+    required: false
+    description: >
+      Defines the kind of uncertainty distribution that is valid for this 
+      particular object or parameter.
+      Example values: "undefined", "log-normal", "normal", "triangular", "uniform".
