@@ -1,0 +1,436 @@
+name: ILCDprocessInformation
+id: https://example.org/ILCDprocessInformation
+license: CC-BY-4.0
+imports:
+  - linkml:types
+  - linkml_shared_definitions # Import shared definitions between ILCD YAML schemas
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ILCDpi: https://example.org/ILCDprocessInformation/
+default_prefix: ILCDpi
+
+########################################
+# Classes
+########################################
+classes:
+  ProcessInformation:
+    description: Container for the process information section.
+    slots:
+      - id
+      - dataSetInformation
+      - quantitativeReference
+      - timeInformation
+      - geography
+      - technology
+
+  # --- dataSetInformation
+  DataSetInformation:
+    description: Data set information details.
+    slots:
+      - id
+      - UUID
+      - dataSetName
+      - synonyms
+      - classificationInformation
+      - generalComment
+      - referenceToExternalDocumentation
+      - otherDSI
+
+  DataSetName:
+    description: Container for the data set name.
+    slots:
+      - id
+      - baseName
+      - functionalUnitFlowProperties
+
+  ClassificationInformation:
+    description: Classification information for the data set.
+    slots:
+      - id
+      - classification
+
+  Classification:
+    description: Classification object.
+    slots:
+      - id
+      - name
+      - classEntries
+
+  ClassificationEntry:
+    description: Classification entry.
+    slots:
+      - id
+      - value
+      - level
+      - classId
+
+  # --- quantitativeReference
+  QuantitativeReference:
+    description: Quantitative reference details.
+    slots:
+      - id
+      - referenceToReferenceFlow
+      - type
+
+  TimeInformation:
+    description: Time-related information for the data set.
+    slots:
+      - id
+      - referenceYear
+      - dataSetValidUntil
+      - timeRepresentativenessDescription
+      - otherTime
+
+  GeographyInformation:
+    description: Geographical information details.
+    slots:
+      - id
+      - locationOfOperationSupplyOrProduction
+
+  LocationInfo:
+    description: Location details.
+    slots:
+      - id
+      - descriptionOfRestrictions
+      - location
+
+  TechnologyInformation:
+    description: Technology information for the data set.
+    slots:
+      - id
+      - technologyDescriptionAndIncludedProcesses
+      - technologicalApplicability
+      - referenceToTechnologyFlowDiagrammOrPicture
+      - referenceToTechnologyPictogramme
+
+########################################
+# Slots
+########################################
+slots:
+  # -- ProcessInformation top-level
+  dataSetInformation:
+    range: DataSetInformation
+    inlined: true
+    required: true
+    minimum_cardinality: 1
+    maximum_cardinality: 1
+    description: >
+      General data set information. Section covers all single fields in the 
+      ISO/TS 14048 "Process description", which are not part of the other 
+      sub-sections. In ISO/TS 14048 no own sub-section is 
+      foreseen for these entries.
+
+  quantitativeReference:
+    range: QuantitativeReference
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description:
+      This section names the quantitative reference used for this data set,
+      i.e. the reference to which the inputs and outputs quantiatively relate.
+
+  timeInformation:
+    range: TimeInformation
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Provides information about the time representativeness of the data set.
+
+  geography:
+    range: GeographyInformation
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Provides information about the geographical representativeness of the 
+      data set.
+
+  technology:
+    range: TechnologyInformation
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Provides information about the technological representativeness of the 
+      data set.
+
+  # -- DataSetInformation
+  dataSetName:
+    range: DataSetName
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: General descriptive and specifying name of the process.
+
+  synonyms:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Synonyms / alternative names / brands of the good, service, or process. 
+      Separated by semicolon.
+
+  classificationInformation:
+    range: ClassificationInformation
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Hierarchical classification of the good, service, or process. 
+      (Note: This entry is NOT required for the identification of a Process. 
+      It should nevertheless be avoided to use identical names for Processes 
+      in the same category.
+
+  generalComment:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      General information about the data set, including e.g. general 
+      (internal, not reviewed) quality statements as well as information 
+      sources used. (Note: Please also check the more specific fields e.g. 
+      on "Advice on data set use" to avoid overlapping entries.)
+
+  referenceToExternalDocumentation:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    description: >
+      "Source data set(s)" of detailed LCA study on the process or product 
+      represented by this data set, as well as documents / files with 
+      overarching documentative information on technology, geographical 
+      and / or time aspects etc. (e.g. basic engineering studies, process 
+      simulation results, patents, plant documentation, model behind the 
+      parameterisation of the "Mathematical model" section, etc.) 
+      (Note: can indirectly reference to digital file.)
+
+  otherDSI:
+    range: OtherContent
+    inlined: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: May contain arbitrary content.
+
+  # -- DataSetName
+  baseName:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    required: true
+    minimum_cardinality: 1
+    maximum_cardinality: 1
+    description: >
+      General descriptive name of the process and/or its main good(s) or 
+      service(s) and/or it's level of processing.
+
+  functionalUnitFlowProperties:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Further, quantitative specifying information on the good, service or 
+      process in technical term(s): qualifying constituent(s)-content and / or 
+      energy-content per unit etc. as appropriate. Separated by commata. 
+      (Note: non-qualifying flow properties, CAS No, Synonyms, Chemical 
+      formulas etc. are documented exclusively in the "Flow data set".)
+
+  # -- ClassificationInformation
+  classification:
+    range: Classification
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    description: >
+      Optional statistical or other classification of the data set.
+      Typically also used for structuring LCA databases.
+
+  # -- Classification
+  classEntries:
+    range: ClassificationEntry
+    multivalued: true
+    inlined_as_list: true
+    description: List of classification entries.
+
+  level:
+    range: integer
+    recommended: true
+    description: >
+      If more than one class is specified in a hierachical classification 
+      system, the hierarchy level (1,2,...) could be specified with this 
+      attribute of class.
+
+  classId:
+    range: string
+    recommended: true
+    description: >
+      Unique identifier for the class. 
+      [Notes: If such identifiers are also defined in the referenced category 
+      file, they should be identical. Identifiers can be UUID's, but also 
+      other forms are allowed.]
+
+  # -- QuantitativeReference
+  referenceToReferenceFlow:
+    range: integer
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    description: >
+      One or more of the Inputs or Outputs in case 
+      "Type of quantitative reference" is of type "Reference flow(s)". 
+      (Data set internal reference.)
+
+  # -- TimeInformation
+  referenceYear:
+    range: Year
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Start year of the time period for which the data set is valid 
+      (until year of "Data set valid until:"). 
+      For data sets that combine data from different years, the most 
+      representative year is given regarding the overall environmental impact. 
+      In that case, the reference year is derived by expert judgement.
+
+  dataSetValidUntil:
+    range: Year
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      End year of the time period for which the data set is still valid / 
+      sufficiently representative. This date also determines when a data set 
+      revision / remodelling is required or recommended due to expected 
+      relevant changes in environmentally or technically relevant 
+      inventory values, including in the background system.
+
+  timeRepresentativenessDescription:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Description of the valid time span of the data set including information 
+      on limited usability within sub-time spans (e.g. summer/winter).
+
+  otherTime:
+    range: OtherContent
+    inlined: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Additional time-related dictionary data. May contain arbitrary content.
+
+  # -- GeographyInformation
+  locationOfOperationSupplyOrProduction:
+    range: LocationInfo
+    inlined: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Location, country or region the data set represents. 
+      [Note 1: This field does not refer to e.g. the country in which a 
+      specific site is located that is represented by this data set but to the 
+      actually represented country, region, or site. 
+      Note 2: Entry can be of type "two-letter ISO 3166 country code" for 
+      countries, "seven-letter regional codes" for regions or continents, or 
+      "market areas and market organisations", as predefined for the ILCD. Also 
+      a name for e.g. a specific plant etc. can be given here 
+      (e.g. "FR, Lyon, XY Company, Z Site"; user defined). 
+      Note 3: The fact whether the entry refers to production or to 
+      consumption / supply has to be stated in the name-field 
+      "Mix and location types" e.g. as "Production mix".]
+
+  # -- LocationInfo
+  descriptionOfRestrictions:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Further explanations about additional aspects of the location: e.g. a 
+      company and/or site description and address, whether for certain 
+      sub-areas within the "Location" the data set is not valid, whether data 
+      is only valid for certain regions within the location indicated, or 
+      whether certain elementary flows or intermediate product flows are 
+      extrapolated from another geographical area.
+
+  location:
+    range: string
+    recommended: true
+    description: Location code or name.
+
+  # -- TechnologyInformation
+  technologyDescriptionAndIncludedProcesses:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Description of the technological characteristics including operating 
+      conditions of the process or product system. For the latter this includes 
+      the relevant upstream and downstream processes included in the data set. 
+      Professional terminology should be used.
+
+  technologicalApplicability:
+    range: MultiLangString
+    multivalued: true
+    inlined_as_list: true
+    recommended: true
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      Description of the intended / possible applications of the good, service, 
+      or process. E.g. for which type of products the material, represented by 
+      this data set, is used. Examples: "This high purity chemical is used for 
+      analytical laboratories only." or "This technical quality bulk chemical 
+      is used for large scale synthesis in chemical industry.". Or: "This truck 
+      is used only for long-distance transport of liquid bulk chemicals".
+
+  referenceToTechnologyFlowDiagrammOrPicture:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    description: >
+      "Source data set" of the flow diagramm(s) and/or photo(s) of the good, 
+      service, technology, plant etc represented by this data set. For clearer 
+      illustration and documentation of data set.
+
+  referenceToTechnologyPictogramme:
+    range: GlobalReferenceType
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: >
+      "Source data set" of the pictogramme of the good, service, technogy, 
+      plant etc. represented by this data set. For use in graphical 
+      user interfaces of LCA software.

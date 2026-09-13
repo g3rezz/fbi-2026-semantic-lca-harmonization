@@ -1,0 +1,15 @@
+FBI 2026 semantic LCA harmonization
+Copyright (c) 2026 Georgi Tsakov
+
+Code is distributed under the MIT license in LICENSE.md.
+
+The packaged LinkML schemas and generated Python models retain their
+CC-BY-4.0 notices: https://creativecommons.org/licenses/by/4.0/
+Attribution: Georgi Tsakov, lca-data-harmonization-pipeline,
+https://github.com/g3rezz/lca-data-harmonization-pipeline
+Changes: package/import organization and schema filename casing.
+The SHACL resource is distributed under the source repository's MIT notice.
+
+Source notice for code and rules: Copyright (c) 2025 Georgi Tsakov.
+External environmental records, taxonomies, DIN and BKI resources remain
+subject to their respective licenses.

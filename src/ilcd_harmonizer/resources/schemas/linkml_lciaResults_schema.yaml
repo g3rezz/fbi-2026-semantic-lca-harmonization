@@ -1,0 +1,61 @@
+name: ILCDlciaResults
+id: https://example.org/ILCDlciaResults
+license: CC-BY-4.0
+imports:
+  - linkml:types
+  - linkml_shared_definitions # Reuse classes/slots from SharedDefinitions
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ILCDlcia: https://example.org/ILCDlciaResults/
+default_prefix: ILCDlcia
+
+########################################
+# Classes
+########################################
+classes:
+  LCIAResults:
+    description: Top-level container for the LCIAResults section.
+    slots:
+      - id
+      - LCIAResult
+
+  # Each entry in the LCIAResult array
+  LCIAResultEntry:
+    description: Represents a single LCIA result object.
+    slots:
+      - id
+      - referenceToLCIAMethodDataSet
+      - meanAmount
+      - uncertaintyDistributionType
+      - otherLCIA # renamed from 'other' to avoid collisions
+
+########################################
+# Slots
+########################################
+slots:
+  # -- LCIAResults
+  LCIAResult:
+    range: LCIAResultEntry
+    multivalued: true
+    inlined_as_list: true
+    required: false
+    description: >
+      Single LCIA result represented as a list of LCIAResultEntry objects.
+
+  # -- LCIAResultEntry
+  referenceToLCIAMethodDataSet:
+    range: GlobalReferenceType
+    inlined: true
+    required: false
+    minimum_cardinality: 1
+    maximum_cardinality: 1
+    description: >
+      "LCIA method data set" applied to calculate the LCIA results.
+
+  otherLCIA:
+    range: OtherContent
+    inlined: true
+    required: false
+    minimum_cardinality: 0
+    maximum_cardinality: 1
+    description: May contain arbitrary content.

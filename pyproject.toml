@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fbi-2026-semantic-lca-harmonization"
+version = "0.1.0"
+description = "Semantic ILCD harmonization pipeline accompanying the FBI 2026 paper"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {file = "LICENSE.md"}
+authors = [{name = "Georgi Tsakov"}]
+dependencies = [
+  "linkml==1.8.6",
+  "linkml-runtime==1.8.3",
+  "rdflib==7.1.3",
+  "pyshacl==0.30.1",
+  "PyYAML==6.0.2",
+]
+
+[project.scripts]
+ilcd-harmonizer = "ilcd_harmonizer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ilcd_harmonizer = ["resources/schemas/*.yaml", "resources/shacl/*.ttl", "resources/*.rq"]

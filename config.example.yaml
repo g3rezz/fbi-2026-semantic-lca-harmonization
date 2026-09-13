@@ -1,0 +1,36 @@
+# Copy to config.local.yaml and supply your own local inputs.
+# Relative paths resolve beside the configuration file, not the working directory.
+input:
+  sources:
+    # Keep the sources you use. JSONL is the default format.
+    - repository: oekobaudat
+      path: data/oekobaudat.jsonl
+      repository_uri: https://www.oekobaudat.de/
+    - repository: ibu
+      path: data/ibu.jsonl
+      repository_uri: https://ibudata.lca-data.com/
+    - repository: epdnorge
+      path: data/epdnorge.jsonl
+      repository_uri: https://epdnorway.lca-data.com/
+    - repository: ies
+      path: data/ies.jsonl
+      repository_uri: https://data.environdec.com/
+
+# Required for IES/EPDNorge records whose material category is not supplied by rules.
+# Omit when no material decisions are needed; a list of file paths is also supported.
+material_decisions: decisions/material.jsonl
+# Optional deterministic IES input. Run prepare to create this local CSV, then enable.
+# material_rules: outputs/ies-material-fields.csv
+# Required by enrich/run: UUID-keyed DIN assignments for every selected record.
+din_decisions: decisions/din276.jsonl
+
+resources:
+  # Required English/German taxonomy and DIN vocabulary for graph construction.
+  category_en: resources/oekobaudat_categories_en.xml
+  category_de: resources/oekobaudat_categories_de.xml
+  din_csv: resources/din276.csv
+  # Optional separate hierarchy for normalization; defaults to category_en.
+  # category_api: resources/oekobaudat_categories.xml
+  bki_xml: []  # Optional list of locally supplied BKI XML paths.
+
+output_dir: outputs
